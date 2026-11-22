@@ -16,22 +16,6 @@ APenclasItems::APenclasItems()
 void APenclasItems::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("PenclasItems BeginPlay() called! hAPPY?"));
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("PenclasItems Loging on Screen Messsage yay"));
-	}
-
-	UWorld* World = GetWorld();
-
-	FVector Location = GetActorLocation();
-	DRAW_SPHERE(Location, FColor::Red);
-
-	FVector ForwardVector = GetActorForwardVector();
-	DRAW_VECTOR(Location, Location + ForwardVector * 100.f, FColor::Red);
-
-	DRAW_CAPSULE(Location + FVector(0.f, 0.f, 100.f), FColor::Green);
 	
 }
 
@@ -39,6 +23,16 @@ void APenclasItems::BeginPlay()
 void APenclasItems::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	float movementRate = 50.f;
+	float rotationRate = 45.f;
+
+	AddActorWorldOffset(FVector(movementRate * DeltaTime, 0.f, 0.f));
+	AddActorWorldRotation(FRotator(0.f, rotationRate * DeltaTime, 0.f));
+
+	DRAW_SPHERE_SingleFrame(GetActorLocation(), FColor::Red);
+	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f, FColor::Red);
+
 
 }
 
