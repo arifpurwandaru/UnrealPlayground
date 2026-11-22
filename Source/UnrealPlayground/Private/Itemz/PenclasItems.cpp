@@ -24,11 +24,11 @@ void APenclasItems::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	float movementRate = 50.f;
-	float rotationRate = 45.f;
-
-	AddActorWorldOffset(FVector(movementRate * DeltaTime, 0.f, 0.f));
-	AddActorWorldRotation(FRotator(0.f, rotationRate * DeltaTime, 0.f));
+	RunningTime += DeltaTime;
+	float deltaZ = Amplitude * FMath::Sin(RunningTime * TimeConstant);
+	
+	AddActorWorldOffset(FVector(0.f, 0.f, deltaZ));
+	AddActorWorldRotation(FRotator(0.f, DeltaTime * RotationSpeed, 0.f));
 
 	DRAW_SPHERE_SingleFrame(GetActorLocation(), FColor::Red);
 	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f, FColor::Red);

@@ -20,10 +20,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Amplitude = 0.25f;
 private:
-	UPROPERTY(EditInstanceOnly)
+	float RunningTime;
+	UPROPERTY(EditAnywhere)
+	float Amplitude = 0.25f;
+	UPROPERTY(EditAnywhere)
 	float TimeConstant = 5.f;
+	UPROPERTY(EditAnywhere)
+	float RotationSpeed = 45.f;
+
 
 };
