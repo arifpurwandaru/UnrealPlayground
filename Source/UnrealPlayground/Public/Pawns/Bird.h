@@ -28,6 +28,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void MoveForward(float value);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* capsule;
