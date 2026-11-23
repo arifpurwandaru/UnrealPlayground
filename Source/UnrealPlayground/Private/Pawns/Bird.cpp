@@ -7,6 +7,8 @@
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 ABird::ABird()
@@ -21,6 +23,13 @@ ABird::ABird()
 
 	birdMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BirdMesh"));
 	birdMesh->SetupAttachment(GetRootComponent());
+
+	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	springArm->SetupAttachment(GetRootComponent());
+	springArm->TargetArmLength = 300.f;
+
+	viewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
+	viewCamera->SetupAttachment(springArm);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
@@ -58,6 +67,16 @@ void ABird::Move(const FInputActionValue& value)
 	}
 }
 
+void ABird::Look(const FInputActionValue& value)
+{
+	const FVector2D lookAxisValue = value.Get<FVector2D>();
+	if (GetController())
+	{
+		AddControllerYawInput(lookAxisValue.X);
+		AddControllerPitchInput(lookAxisValue.Y);
+	}
+}
+
 // Called every frame
 void ABird::Tick(float DeltaTime)
 {
@@ -73,6 +92,7 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+		enhancedInputComponent->BindAction(lookAction, ETriggerEvent::Triggered, this, &ABird::Look);
 	}
 }
 

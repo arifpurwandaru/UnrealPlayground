@@ -12,6 +12,8 @@ class UCapsuleComponent;
 class USkeletalMeshComponent;
 class UInputMappingContext;
 class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class UNREALPLAYGROUND_API ABird : public APawn
@@ -31,14 +33,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void MoveForward(float value);
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* birdMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* moveAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* lookAction;
+
+	void MoveForward(float value); // ora kanggo
+
 	void Move(const FInputActionValue& value);
+	void Look(const FInputActionValue& value);
 
 
 private:
@@ -46,4 +53,9 @@ private:
 	UCapsuleComponent* capsule;
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* birdMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* springArm;
+
+	UCameraComponent* viewCamera;
 };
