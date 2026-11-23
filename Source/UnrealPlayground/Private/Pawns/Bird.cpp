@@ -4,6 +4,9 @@
 #include "Pawns/Bird.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 // Sets default values
 ABird::ABird()
@@ -27,12 +30,32 @@ ABird::ABird()
 void ABird::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if(APlayerController* playerController = Cast<APlayerController>(GetController()))
+	{
+		if(UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
+		{
+			subsystem->AddMappingContext(birdMappingContext, 0);
+		}
+	}
 }
 
 void ABird::MoveForward(float value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("MoveForward: %f"), value);
+}
+
+void ABird::Move(const FInputActionValue& value)
+{
+	const float directionValue = value.Get<float>();
+	if (Controller && (directionValue != 0.0f))
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		// get forward vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, directionValue);
+	}
 }
 
 // Called every frame
@@ -47,7 +70,9 @@ void ABird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(FName("MoveForward"), this, &ABird::MoveForward);
-
+	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		enhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &ABird::Move);
+	}
 }
 
