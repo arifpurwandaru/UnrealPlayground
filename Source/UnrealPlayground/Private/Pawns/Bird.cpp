@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "UnrealPlayground/DebugMacros.h"
 
 // Sets default values
 ABird::ABird()
@@ -59,11 +60,14 @@ void ABird::Move(const FInputActionValue& value)
 	if (Controller && (directionValue != 0.0f))
 	{
 		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		//const FRotator Rotation = Controller->GetControlRotation();
+		//const FRotator YawRotation(0, Rotation.Yaw, 0);
 		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, directionValue);
+		//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		//AddMovementInput(Direction, directionValue);
+
+		const FVector direction = GetController()->GetControlRotation().Vector();
+		AddMovementInput(direction, directionValue);
 	}
 }
 
@@ -73,7 +77,7 @@ void ABird::Look(const FInputActionValue& value)
 	if (GetController())
 	{
 		AddControllerYawInput(lookAxisValue.X);
-		AddControllerPitchInput(lookAxisValue.Y);
+		AddControllerPitchInput(-lookAxisValue.Y); // minus for inverted axis
 	}
 }
 
@@ -81,7 +85,6 @@ void ABird::Look(const FInputActionValue& value)
 void ABird::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
