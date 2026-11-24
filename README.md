@@ -46,6 +46,18 @@ git push -u origin main
 
 If the remote already contains commits, reconcile its history before pushing instead of overwriting it. To verify assets are managed by LFS, run `git lfs ls-files` after staging or committing them.
 
+## Srigala controls and animation
+
+For a Blueprint derived from `ASrigala`, assign `SK_Wolf` to the inherited **Mesh**, align its paws with the capsule bottom, and configure the existing movement/look input actions and mapping context. Remove any old Floating Pawn Movement or duplicate wolf mesh component. Character Movement handles gravity and ground collision; the floor must block Pawn.
+
+- Movement follows camera yaw only. Mouse pitch does not make the wolf fly.
+- Default movement walks at 180 cm/s; hold **Left Shift** to run at 450 cm/s. These speeds are editable in the Blueprint's Movement defaults; Run Speed must exceed Walk Speed. Run Action can use the native default or a Blueprint-assigned Boolean input action with no Hold/Tap triggers for immediate hold-to-run. Shift is mapped to the final selected action during input setup, and releasing or canceling that same action restores walking; no separate Stop Run Action is needed.
+- The follow camera attaches to the spring-arm tip and orbits using controller rotation. At BeginPlay the rig resets stored component transforms, offsets, rotation inheritance, and lag settings; use **Camera Distance** (default 250 cm) rather than moving the Camera component to adjust distance. **Look Sensitivity** defaults to 1; try 0.5 for slower mouse movement. These settings are under Camera on the Blueprint or placed actor. The player must possess Srigala and use it as the view target; avoid another pawn auto-possessing Player 0 or Blueprint camera logic that selects a different view target.
+- **Use Simple Locomotion Animation** defaults to enabled. It plays the existing in-place wolf idle, walk, and run clips according to actual horizontal speed, without restarting them every frame. Releasing movement lets Character Movement decelerate and returns to idle below 3 cm/s. There is no separate stop clip in this wolf pack.
+- This is simple clip switching, not a blended Animation Blueprint or foot IK. Disable **Use Simple Locomotion Animation** before assigning a custom Animation Blueprint. The three animation assets are editable under Animation and must match the inherited mesh's skeleton; invalid assignments log an error.
+
+After native header or component changes, close Unreal Editor, rebuild the Editor target in Visual Studio, and reopen the project. An active Live Coding session can block the normal Editor build.
+
 ## What is stored
 
 Commit the `.uproject` file, `Source`, `Config`, `Content`, `.vsconfig`, `.gitignore`, `.gitattributes`, and this README. `Content` includes maps, Blueprints, and external actor and object data; keep these files together.
