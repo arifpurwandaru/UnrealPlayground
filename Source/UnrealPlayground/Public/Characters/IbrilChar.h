@@ -9,6 +9,8 @@
 
 class UInputMappingContext;
 class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class UNREALPLAYGROUND_API AIbrilChar : public ACharacter
@@ -33,5 +35,12 @@ protected:
 
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* springArm;
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* camera;
+
 
 };

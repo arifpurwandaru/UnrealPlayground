@@ -2,11 +2,29 @@
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 AIbrilChar::AIbrilChar()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// tiga line below is to prevent the character from rotating when moving the camera
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	springArm->SetupAttachment(GetRootComponent());
+	springArm->bUsePawnControlRotation = true;
+	springArm->TargetArmLength = 300.f;
+
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	camera->SetupAttachment(springArm);
+
+	// this line below is to make the character rotate when moving
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void AIbrilChar::BeginPlay()
