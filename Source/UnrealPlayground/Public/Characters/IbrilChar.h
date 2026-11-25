@@ -12,6 +12,8 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
+class UGroomComponent;
+
 UCLASS()
 class UNREALPLAYGROUND_API AIbrilChar : public ACharacter
 {
@@ -41,6 +43,11 @@ private:
 	USpringArmComponent* springArm;
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* camera;
+
+	UPROPERTY(VisibleAnywhere, Category="Hair")
+	UGroomComponent* hair;
+	UPROPERTY(VisibleAnywhere, Category="Hair")
+	UGroomComponent* eyebrows;
 
 
 };

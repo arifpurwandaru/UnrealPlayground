@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GroomComponent.h"
 
 AIbrilChar::AIbrilChar()
 {
@@ -25,6 +26,15 @@ AIbrilChar::AIbrilChar()
 
 	// this line below is to make the character rotate when moving
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// hair and eyebrows
+	hair = CreateDefaultSubobject<UGroomComponent>(TEXT("Hair"));
+	hair->SetupAttachment(GetMesh());
+	hair->AttachmentName = FString("head");
+
+	eyebrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eyebrows"));
+	eyebrows->SetupAttachment(GetMesh());
+	eyebrows->AttachmentName = FString("head");
 }
 
 void AIbrilChar::BeginPlay()
