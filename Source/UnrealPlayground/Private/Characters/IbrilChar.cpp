@@ -1,34 +1,64 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Characters/IbrilChar.h"
+#include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
-// Sets default values
 AIbrilChar::AIbrilChar()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void AIbrilChar::BeginPlay()
 {
 	Super::BeginPlay();
+	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
+		{
+			subsystem->AddMappingContext(ibrilIMC, 0);
+		}
+	}
+
 	
 }
 
-// Called every frame
+void AIbrilChar::Move(const FInputActionValue& value)
+{
+	const FVector2D movementVector = value.Get<FVector2D>();
+	
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+
+	const FVector Forward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector Right = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(Forward, movementVector.Y);
+	AddMovementInput(Right, movementVector.X);
+}
+
+void AIbrilChar::Look(const FInputActionValue& value)
+{
+	const FVector2D lookVector = value.Get<FVector2D>();
+
+	AddControllerPitchInput(lookVector.Y);
+	AddControllerYawInput(lookVector.X);
+}
+
 void AIbrilChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
 void AIbrilChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
+	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		enhancedInputComponent->BindAction(ibrilMovement, ETriggerEvent::Triggered, this, &AIbrilChar::Move);
+		enhancedInputComponent->BindAction(ibrilLook, ETriggerEvent::Triggered, this, &AIbrilChar::Look);
+	}
 }
 
