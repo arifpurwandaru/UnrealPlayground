@@ -23,6 +23,7 @@ void UIbrilAniminstanceCeplusplus::NativeUpdateAnimation(float DeltaSeconds)
 	if (ibrilCharMovement)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(ibrilCharMovement->Velocity);
+		isFalling = ibrilCharMovement->IsFalling();
 		
 	}
 }

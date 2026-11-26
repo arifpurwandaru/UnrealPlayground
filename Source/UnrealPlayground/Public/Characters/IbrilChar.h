@@ -35,8 +35,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ibrilLook;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* JumpAction;
+
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);
+	void Jump();
 
 private:
 	UPROPERTY(VisibleAnywhere)

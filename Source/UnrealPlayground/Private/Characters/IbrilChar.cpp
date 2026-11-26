@@ -73,6 +73,11 @@ void AIbrilChar::Look(const FInputActionValue& value)
 	AddControllerYawInput(lookVector.X);
 }
 
+void AIbrilChar::Jump()
+{
+	ACharacter::Jump();
+}
+
 void AIbrilChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -87,6 +92,7 @@ void AIbrilChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	{
 		enhancedInputComponent->BindAction(ibrilMovement, ETriggerEvent::Triggered, this, &AIbrilChar::Move);
 		enhancedInputComponent->BindAction(ibrilLook, ETriggerEvent::Triggered, this, &AIbrilChar::Look);
+		enhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AIbrilChar::Jump);
 	}
 }
 
